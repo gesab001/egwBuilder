@@ -3,38 +3,41 @@ import re
 import mysql.connector
 
 mydb = mysql.connector.connect(
-       host="192.168.1.68",
-       user="",
-       passwd="",
+       host="localhost",
+       user="root",
+       passwd="ch5t8k4u",
        database="egw"
     )
 print(mydb) 
-
-file = open("egw-comp.TXT", "r")
-lines = file.read()
-x = re.findall("[A-Z0-9]+\s[-]\s[a-zA-Z0-9\s]+\s\([0-9\-]+\)", lines)
-for i in x:
-   print(i)
-   y = re.search("[A-Z0-9]+\s", i)
-   code = y.group()
-   z = re.search("\s[a-zA-Z0-9\s]+\s", i)
-   title = z.group().strip()
-   updateTitle(code, title)
-   a = re.search("\([0-9\-]+\)", i)
-   year = a.group()
-   year = year.replace("(", "")
-   year = year.replace(")", "")
-   print(year)
 
 def updateTitle(bookcode, title):
 
 
     mycursor = mydb.cursor()
 
-    sql = "UPDATE egw_writings_complete TITLE='"+title+"' WHERE BOOKCODE='"+bookcode+"'"
+    sql = "UPDATE books SET bookTitle="+title+" WHERE bookCode='"+bookcode+"'"
     mycursor.execute(sql)
 
     mydb.commit()
     reference = bookcode
-    print(mycursor.rowcount, reference, "successfully added")   
+    print(mycursor.rowcount, reference, "successfully added")  
+
+file = open("egw-comp.TXT", "r")
+lines = file.read()
+x = re.findall("[a-zA-Z0-9]+\s[-]\s[a-zA-Z0-9\s\.\'\,\-\[\]]+\s\([0-9\-\s\,]+\)", lines)
+for i in x:
+   print(i)
+   y = re.search("[a-zA-Z0-9]+\s", i)
+   code = y.group()
+   z = re.search("\s[a-zA-Z0-9\s\.\'\,\-\[\]]+\s", i)
+   title = '"' + z.group().strip()[1:] + '"'
+   
+   updateTitle(code, title)
+   a = re.search("\([0-9\-\s\,]+\)", i)
+   year = a.group()
+   year = year.replace("(", "")
+   year = year.replace(")", "")
+   print(year)
+
+ 
 

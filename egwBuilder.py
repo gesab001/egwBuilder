@@ -22,6 +22,7 @@ def update(username, password, bookcode, title):
     mydb.commit()
     reference = bookcode + " " + page + "." + paragraph
     print(mycursor.rowcount, reference, "successfully added")
+
 def addEGW(username, password, bookcode, page, paragraph, text):
     
     mydb = mysql.connector.connect(
