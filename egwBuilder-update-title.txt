@@ -1,0 +1,17 @@
+import os
+import re
+file = open("egw-comp.TXT", "r")
+lines = file.read()
+x = re.findall("[A-Z0-9]+\s[-]\s[a-zA-Z0-9\s]+\s\([0-9\-]+\)", lines)
+for i in x:
+   print(i)
+   y = re.search("[A-Z0-9]+\s", i)
+   code = y.group()
+   z = re.search("\s[a-zA-Z0-9\s]+\s", i)
+   title = z.group().strip()
+   a = re.search("\([0-9\-]+\)", i)
+   year = a.group()
+   year = year.replace("(", "")
+   year = year.replace(")", "")
+   print(year)
+

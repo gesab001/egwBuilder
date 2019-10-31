@@ -3,10 +3,10 @@ import os
 import sqlite3
 import mysql.connector
 
-def addEGW(username, password, bookcode, page, paragraph, text):
+def update(username, password, bookcode, title):
     
     mydb = mysql.connector.connect(
-       host="bibledb.cvtfhbljhzkg.ap-southeast-2.rds.amazonaws.com",
+       host="192.168.1.68",
        user=username,
        passwd=password,
        database="egw"
@@ -15,7 +15,26 @@ def addEGW(username, password, bookcode, page, paragraph, text):
 
     mycursor = mydb.cursor()
 
-    sql = "INSERT INTO egw_writings_complete (BOOKCODE, PAGE, PARAGRAPH, WORD) VALUES (%s, %s, %s, %s)"
+    sql = "UPDATE egw_writings_complete TITLE='"+title+"' WHERE BOOKCODE='"+bookcode
+    val = (bookcode, title)
+    mycursor.execute(sql, val)
+
+    mydb.commit()
+    reference = bookcode + " " + page + "." + paragraph
+    print(mycursor.rowcount, reference, "successfully added")
+def addEGW(username, password, bookcode, page, paragraph, text):
+    
+    mydb = mysql.connector.connect(
+       host="192.168.1.68",
+       user=username,
+       passwd=password,
+       database="egw"
+    )
+    print(mydb) 
+
+    mycursor = mydb.cursor()
+
+    sql = "INSERT INTO ego_writings_complete (BOOKCODE, PAGE, PARAGRAPH, WORD) VALUES (%s, %s, %s, %s)"
     val = (bookcode, page, paragraph, text)
     mycursor.execute(sql, val)
 
