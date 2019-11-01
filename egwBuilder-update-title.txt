@@ -5,7 +5,7 @@ import mysql.connector
 mydb = mysql.connector.connect(
        host="localhost",
        user="root",
-       passwd="ch5t8k4u",
+       passwd="",
        database="egw"
     )
 print(mydb) 
@@ -22,6 +22,18 @@ def updateTitle(bookcode, title):
     reference = bookcode
     print(mycursor.rowcount, reference, "successfully added")  
 
+def updateYear(bookcode, year):
+
+
+    mycursor = mydb.cursor()
+
+    sql = "UPDATE books SET year="+year+" WHERE bookCode='"+bookcode+"'"
+    mycursor.execute(sql)
+
+    mydb.commit()
+    reference = bookcode
+    print(mycursor.rowcount, reference, "successfully added")  
+
 file = open("egw-comp.TXT", "r")
 lines = file.read()
 x = re.findall("[a-zA-Z0-9]+\s[-]\s[a-zA-Z0-9\s\.\'\,\-\[\]]+\s\([0-9\-\s\,]+\)", lines)
@@ -31,12 +43,12 @@ for i in x:
    code = y.group()
    z = re.search("\s[a-zA-Z0-9\s\.\'\,\-\[\]]+\s", i)
    title = '"' + z.group().strip()[1:] + '"'
-   
-   updateTitle(code, title)
    a = re.search("\([0-9\-\s\,]+\)", i)
    year = a.group()
    year = year.replace("(", "")
    year = year.replace(")", "")
+   year = '"' + year + '"'
+   updateYear(code, year)
    print(year)
 
  

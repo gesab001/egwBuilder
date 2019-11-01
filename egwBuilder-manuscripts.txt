@@ -1,0 +1,56 @@
+import os
+import sqlite3
+import mysql.connector
+import codecs
+import re
+mydb = mysql.connector.connect(
+       host="localhost",
+       user="root",
+       passwd="",
+       database="egw"
+    )
+print(mydb) 
+def update(username, password, bookcode, title):
+    
+ 
+
+    mycursor = mydb.cursor()
+
+    sql = "UPDATE egw_writings_complete TITLE='"+title+"' WHERE BOOKCODE='"+bookcode
+    val = (bookcode, title)
+    mycursor.execute(sql, val)
+
+    mydb.commit()
+    reference = bookcode + " " + page + "." + paragraph
+    print(mycursor.rowcount, reference, "successfully added")
+
+def addEGW(title, paragraph, text):
+    
+
+    mycursor = mydb.cursor()
+
+    sql = "INSERT INTO egw_manuscripts (title, paragraph, word) VALUES (%s, %s, %s)"
+    val = (title, paragraph, text)
+    mycursor.execute(sql, val)
+
+    mydb.commit()
+    reference = title + " " + paragraph
+    print(mycursor.rowcount, reference, "successfully added")
+
+
+file = open("egw-comp-manuscripts.TXT", "r", encoding='utf-8', errors='ignore')
+lines = file.read()
+split = lines.split("}")
+del split[len(split)-1]
+
+for line in split:
+  if line!="":
+   item = line.split("{")
+   text = item[0].strip()
+   reference = item[1]
+   title = re.search("[a-zA-Z0-9]+", reference)
+   title = title.group().strip()
+   paragraph = re.search("\s[0-9\.]+", reference)
+   pnumber = paragraph.group().strip()
+   addEGW(title, pnumber, text) 
+
